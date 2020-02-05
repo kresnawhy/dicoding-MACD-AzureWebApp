@@ -24,7 +24,7 @@
        Job <input type="text" name="job" id="job"/></br></br>
        <input type="submit" name="submit" value="Submit" />
        <input type="submit" name="load_data" value="Load Data" />
-       <button type="submit" formaction="https://www.w3docs.com">Submission 2</button>
+       <button type="submit" formaction="sub2.html">Submission 2</button>
  </form>
  <?php
     $host = "kresna-server.database.windows.net";
