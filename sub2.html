@@ -7,6 +7,46 @@
 <body>
 
 <script type="text/javascript">
+    const selectButton = document.getElementById("select-button");
+    const fileInput = document.getElementById("file-input");
+
+    const reportStatus = message => {
+        status.innerHTML += `${message}<br/>`;
+        status.scrollTop = status.scrollHeight;
+    };
+
+    const accountName = "kresnastorage";
+    const sasString = "se=2021-01-31&sp=rwdlac&sv=2018-03-28&ss=b&srt=sco&sig=r33zhwF%2BLNQk8a6FsJ3wAA/%2BwnNKjJBCyWADurcy84Q%3D";
+    const containerName = "computervisionblob";
+    const containerURL = new azblob.ContainerURL(
+        `https://${accountName}.blob.core.windows.net/${containerName}?${sasString}`,
+        azblob.StorageURL.newPipeline(new azblob.AnonymousCredential));
+
+    //Upload blobs
+    const uploadFiles = async () => {
+        try {
+            reportStatus("Uploading files...");
+            const promises = [];
+            for (const file of fileInput.files) {
+                const blockBlobURL = azblob.BlockBlobURL.fromContainerURL(containerURL, file.name);
+                url = blockBlobURL.url.split("?")[0];
+                // analyzeImage(url);
+                document.querySelector("#inputImage").value = url;
+                console.log(url);
+                promises.push(azblob.uploadBrowserDataToBlockBlob(
+                    azblob.Aborter.none, file, blockBlobURL));
+            }
+            await Promise.all(promises);
+            reportStatus("Done.");
+        } catch (error) {
+            console.log(error);
+            reportStatus(error.body.message);
+        }
+    };
+
+    selectButton.addEventListener("click", () => fileInput.click());
+    fileInput.addEventListener("change", uploadFiles);
+
     function processImage() {
         // **********************************************
         // *** Update or verify the following values. ***
@@ -55,8 +95,8 @@
         })
 
             .done(function(data) {
-                // Show formatted JSON on webpage.
-                $("#responseTextArea").val(JSON.stringify(data, null, 2));
+                // Show image description on webpage.
+                document.getElementById("imageCaption").innerHTML = data.description.captions[0].text;
             })
 
             .fail(function(jqXHR, textStatus, errorThrown) {
@@ -67,29 +107,27 @@
                     jQuery.parseJSON(jqXHR.responseText).message;
                 alert(errorString);
             });
-    };
+    }
 </script>
 
 <h1>Analyze image:</h1>
-Enter the URL to an image, then click the <strong>Analyze image</strong> button.
 <br><br>
 Image to analyze:
-<input type="text" name="inputImage" id="inputImage"
-       value="http://upload.wikimedia.org/wikipedia/commons/3/3c/Shaki_waterfall.jpg" />
+<input type="text" name="inputImage" id="inputImage" />
+<button id="select-button">Upload</button>
+<input type="file" id="file-input" style="display: none;" />
 <button onclick="processImage()">Analyze image</button>
 <br><br>
 <div id="wrapper" style="width:1020px; display:table;">
-    <div id="jsonOutput" style="width:600px; display:table-cell;">
-        Response:
-        <br><br>
-        <textarea id="responseTextArea" class="UIInput"
-                  style="width:580px; height:400px;"></textarea>
-    </div>
     <div id="imageDiv" style="width:420px; display:table-cell;">
         Source image:
         <br><br>
         <img id="sourceImage" width="400" />
     </div>
 </div>
+<div id="caption">
+    <h5 id="imageCaption"></h5>
+</div>
 </body>
+<script src="azure-storage-blob.js"></script>
 </html>
