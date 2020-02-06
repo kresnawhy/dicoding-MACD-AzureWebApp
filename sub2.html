@@ -6,6 +6,25 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
 </head>
 <body>
+<h1>Analyze image:</h1>
+<br><br>
+Image to analyze:
+<input type="text" name="inputImage" id="inputImage" />
+<button id="select-button">Upload</button>
+<input type="file" id="file-input" style="display: none;" />
+<button onclick="processImage()">Analyze image</button>
+<br><br>
+<div id="wrapper" style="width:1020px; display:table;">
+    <div id="imageDiv" style="width:420px; display:table-cell;">
+        Source image:
+        <br><br>
+        <img id="sourceImage" width="400" />
+    </div>
+</div>
+<div id="caption">
+    <h5 id="imageCaption"></h5>
+</div>
+</body>
 <script src="azure-storage-blob.js"></script>
 <script type="text/javascript">
     const selectButton = document.getElementById("select-button");
@@ -110,24 +129,4 @@
             });
     }
 </script>
-
-<h1>Analyze image:</h1>
-<br><br>
-Image to analyze:
-<input type="text" name="inputImage" id="inputImage" />
-<button id="select-button">Upload</button>
-<input type="file" id="file-input" style="display: none;" />
-<button onclick="processImage()">Analyze image</button>
-<br><br>
-<div id="wrapper" style="width:1020px; display:table;">
-    <div id="imageDiv" style="width:420px; display:table-cell;">
-        Source image:
-        <br><br>
-        <img id="sourceImage" width="400" />
-    </div>
-</div>
-<div id="caption">
-    <h5 id="imageCaption"></h5>
-</div>
-</body>
 </html>
