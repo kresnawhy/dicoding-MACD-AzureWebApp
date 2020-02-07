@@ -1,31 +1,35 @@
 <!DOCTYPE html>
 <html>
+
 <head>
     <meta charset="UTF-8">
     <title>Analyze Sample</title>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
 </head>
+
 <body>
 <h1>Analyze image:</h1>
-<br><br>
+<br>
 Image to analyze:
-<input type="text" name="inputImage" id="inputImage" />
+<input id="inputImage" name="inputImage" type="text"/>
 <button id="select-button">Upload</button>
-<input type="file" id="file-input" style="display: none;" />
+<input id="file-input" style="display: none;" type="file"/>
 <button onclick="processImage()">Analyze image</button>
-<br><br>
+<br>
+<br>
 <div id="wrapper" style="width:1020px; display:table;">
     <div id="imageDiv" style="width:420px; display:table-cell;">
         Source image:
-        <br><br>
-        <img id="sourceImage" width="400" />
+        <br>
+        <br>
+        <img id="sourceImage" width="400"/>
     </div>
 </div>
 <div id="caption">
     <h5 id="imageCaption"></h5>
 </div>
 </body>
-<script src="azure-storage-blob.js"></script>
+<script src="azure-storage-blob.js" charset="utf-8"></script>
 <script type="text/javascript">
     const selectButton = document.getElementById("select-button");
     const fileInput = document.getElementById("file-input");
@@ -102,8 +106,8 @@ Image to analyze:
             url: uriBase + "?" + $.param(params),
 
             // Request headers.
-            beforeSend: function(xhrObj){
-                xhrObj.setRequestHeader("Content-Type","application/json");
+            beforeSend: function (xhrObj) {
+                xhrObj.setRequestHeader("Content-Type", "application/json");
                 xhrObj.setRequestHeader(
                     "Ocp-Apim-Subscription-Key", subscriptionKey);
             },
@@ -114,12 +118,12 @@ Image to analyze:
             data: '{"url": ' + '"' + sourceImageUrl + '"}',
         })
 
-            .done(function(data) {
+            .done(function (data) {
                 // Show image description on webpage.
                 document.getElementById("imageCaption").innerHTML = data.description.captions[0].text;
             })
 
-            .fail(function(jqXHR, textStatus, errorThrown) {
+            .fail(function (jqXHR, textStatus, errorThrown) {
                 // Display error message.
                 var errorString = (errorThrown === "") ? "Error. " :
                     errorThrown + " (" + jqXHR.status + "): ";
@@ -129,4 +133,5 @@ Image to analyze:
             });
     }
 </script>
+
 </html>
